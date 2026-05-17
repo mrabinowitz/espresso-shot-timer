@@ -28,9 +28,9 @@
 /* [Drive option] */
 tip = "plastic"; // ["plastic","hexbit"]
 
-/* [Shower screen (LM Linea Micra / standard LM 56 mm)] */
-screen_od        = 56.4;  // outer diameter of the shower screen (mm)
-screen_rim       = 5.0;   // height of the screen's rim / dish wall (mm)
+/* [Shower screen (LM OEM F.3.040.01 — Linea Micra)] */
+screen_od        = 57.5;  // outer diameter of the shower screen (mm)
+screen_rim       = 4.4;   // height of the screen's rim / dish wall (mm)
 cup_clearance    = 0.8;   // diametral clearance so the screen slots in (mm)
 cup_wall         = 3.0;   // wall thickness around the screen (mm)
 cup_depth        = 12.0;  // internal cup depth (captures rim + screw head)

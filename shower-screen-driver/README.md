@@ -17,8 +17,9 @@ contrast, only touches the slot, cams out, scratches the screen and can drop
 the screw inside the group — the cup is the whole point.
 
 (Sources: La Marzocco / noto-studio / The Kitchen Barista maintenance guides
-confirm the Linea Micra screen is a ~56.4 mm OD dish held by a single central
-**slotted** diffuser screw, removed with a flat-head; Rhino/WebstaurantStore
+confirm the Linea Micra screen (LM OEM F.3.040.01: 57.5 mm OD, 4.4 mm rim,
+Ø7 mm centre hole) is held by a single central **slotted** diffuser screw,
+removed with a flat-head; Rhino/WebstaurantStore
 listings describe the cup + metal drive piece and the push-up / turn usage.)
 
 ## Two drive options (you pick — no random metal needed)
@@ -58,8 +59,9 @@ openscad -o out.stl -D '$fn=160' -D 'tip="hexbit"' shower-screen-driver.scad
 
 ## Fitting it to your machine
 
-Defaults are best-known LM Linea Micra figures: screen `screen_od = 56.4`,
-single slotted diffuser screw `slot_width = 2.8`, `slot_length = 14`. They are
+Defaults match the LM OEM screen F.3.040.01 (Linea Micra): `screen_od = 57.5`,
+rim `screen_rim = 4.4`, centre hole Ø7; single slotted diffuser screw
+`slot_width = 2.8`, `slot_length = 14`. They are
 deliberately a touch loose (clearances + lead-in chamfers) so it seats without
 forcing. If you have calipers, measure and adjust in the `.scad`, then
 re-export:
@@ -86,7 +88,8 @@ re-export:
 | Parameter | Default | Meaning |
 |---|---|---|
 | `tip` | "plastic" | `plastic` or `hexbit` |
-| `screen_od` | 56.4 | Shower screen outer diameter |
+| `screen_od` | 57.5 | Shower screen outer diameter |
+| `screen_rim` | 4.4 | Screen rim / dish wall height |
 | `cup_clearance` | 0.8 | Diametral clearance so the screen slots in |
 | `cup_wall` | 3.0 | Wall thickness around the screen |
 | `cup_depth` | 12.0 | Internal cup depth |
