@@ -1,154 +1,178 @@
 // =============================================================================
-//  Shower Screen Screwdriver  --  Rhino-style, for La Marzocco Linea Micra
+//  Shower Screen Driver  --  Rhino-style, for La Marzocco Linea Micra
 // =============================================================================
-//  A one-piece knurled knob with concave finger flats (Rhino Screen Driver
-//  style) that drives the wide slotted dispersion / shower-screen screw.
+//  This is a CAPTURE CUP, not a screwdriver. The whole shower screen seats
+//  *into* the cup recess so it is held captive and centred; a central drive
+//  feature engages the slot of the diffuser screw. Press the cup over the
+//  screen, twist counter-clockwise: the screw backs out and the screen lifts
+//  away captured in the cup (no dropped screen, no slipping, fingers clear of
+//  the hot group). To refit, drop the screen + screw into the cup and twist
+//  clockwise onto the group.
 //
-//  Fully parametric. Edit the values below, then export:
-//    openscad -o out.stl -D '$fn=128' -D 'tip_mode="printed"' shower-screen-driver.scad
+//  The back of the cup is a knurled knob with concave finger flats for grip.
 //
-//  Print orientation: as modeled the large FLAT face is on the bed (z=0) and
-//  the blade points UP (+Z) so it prints with no supports. In use you flip it:
-//  palm on the flat face, blade down into the screw.
+//  TWO DRIVE OPTIONS (parameter `tip`):
+//   - "plastic" : a fully-printed integral plastic drive bar (no extra parts)
+//   - "hexbit"  : a socket that holds a standard 1/4" hex flat-/slotted-head
+//                 screwdriver insert bit, so a steel tip drives the screw
+//
+//  Export:
+//    openscad -o out.stl -D '$fn=160' -D 'tip="plastic"' shower-screen-driver.scad
+//    openscad -o out.stl -D '$fn=160' -D 'tip="hexbit"'  shower-screen-driver.scad
+//
+//  Print orientation: as modeled the KNOB END is on the bed (z=0) and the cup
+//  mouth faces UP; the plastic bar / bit socket runs up the centre. No
+//  supports needed. (In use you flip it and press down onto the screen.)
 // =============================================================================
 
-/* [Screw / blade fit] */
-slot_width          = 2.8;   // measured width of the screw slot (mm)
-blade_fit_clearance = 0.30;  // subtracted for fit + print tolerance (mm)
-slot_length         = 14;    // length of the slot across the screw head (mm)
-blade_width_margin  = 1.0;   // make blade narrower than the slot by this (mm)
-blade_length        = 12;    // blade protrusion (mm)
-blade_tip_chamfer   = 1.0;   // lead-in chamfer at blade tip (mm)
-fillet_radius       = 3.0;   // fillet at blade<->knob junction (mm)
+/* [Drive option] */
+tip = "plastic"; // ["plastic","hexbit"]
 
-/* [Tip mode] */
-// "printed" = integral plastic blade (default)
-// "steel"   = pocket + cross-pin to capture a wide flat steel blade (robust)
-// "hex"     = 1/4" hex socket for a slotted insert bit
-tip_mode = "printed"; // ["printed","steel","hex"]
+/* [Shower screen (LM Linea Micra / standard LM 56 mm)] */
+screen_od        = 56.4;  // outer diameter of the shower screen (mm)
+screen_rim       = 5.0;   // height of the screen's rim / dish wall (mm)
+cup_clearance    = 0.8;   // diametral clearance so the screen slots in (mm)
+cup_wall         = 3.0;   // wall thickness around the screen (mm)
+cup_depth        = 12.0;  // internal cup depth (captures rim + screw head)
 
-/* [Steel blade pocket  (tip_mode = steel)] */
-steel_blade_width     = 13;   // width of your steel blade (mm)
-steel_blade_thickness = 2.6;  // thickness of your steel blade (mm)
-steel_pocket_depth    = 14;   // how deep the blade seats into the knob (mm)
-steel_pocket_clear    = 0.25; // clearance per side in the pocket (mm)
-crosspin_dia          = 3.2;  // transverse retaining-pin hole (3 mm rod / M3)
+/* [Centre relief — clears the proud screw head] */
+relief_dia       = 18.0;  // recess at the cup floor for the screw head (mm)
+relief_depth     = 4.0;   // depth of that recess (mm)
 
-/* [Hex socket  (tip_mode = hex)] */
-hex_af           = 6.35;  // 1/4" across-flats (mm)
-hex_clear        = 0.30;  // socket clearance across flats (mm)
-hex_socket_depth = 16;    // socket depth (mm)
+/* [Plastic drive bar  (tip = plastic)] */
+slot_width          = 2.8;  // measured screw slot width (mm)
+slot_length         = 14.0; // slot length across the screw head (mm)
+blade_fit_clearance = 0.30; // subtracted from blade thickness for fit (mm)
+blade_width_margin  = 1.0;  // blade shorter than the slot by this (mm)
+blade_protrusion    = 8.0;  // how far the bar stands up off the relief floor
+blade_tip_chamfer   = 1.0;  // lead-in chamfer at the bar tip (mm)
+blade_root_fillet   = 2.0;  // fillet where the bar meets the floor (mm)
 
-/* [Knob] */
-handle_diameter  = 45;   // knob diameter (mm)
-handle_height    = 28;   // knob height (mm)
-edge_round       = 2.5;  // rounded top & bottom outer edges (mm)
+/* [1/4" hex bit holder  (tip = hexbit)] */
+bit_af          = 6.35;  // 1/4" hex across-flats (mm)
+bit_clear       = 0.18;  // press-fit clearance across flats (mm)
+bit_total_len   = 25.0;  // length of your insert bit (mm) (typical 25)
+bit_protrusion  = 8.0;   // bit tip standing past the relief floor (mm)
+pushout_dia     = 4.0;   // hole under the socket to knock the bit out (mm)
+
+/* [Knob / grip] */
+knob_height      = 24.0;  // height of the solid knob behind the cup (mm)
+edge_round       = 2.5;   // rounded outer edges (mm)
+mouth_chamfer    = 1.5;   // lead-in chamfer at the cup mouth (mm)
 
 /* [Finger flats] */
-flat_count      = 7;   // number of concave finger flats
-flat_cut_radius = 22;  // radius of the cylinder cut that forms each flat (mm)
-flat_depth      = 4;   // how deep each flat bites into the rim (mm)
+flat_count       = 7;     // number of concave finger flats
+flat_cut_radius  = 24;    // radius of the cylinder cut forming each flat (mm)
+flat_depth       = 4;     // how deep each flat bites into the rim (mm)
 
 /* [Knurl texture] */
-knurl_count = 28;   // number of fine vertical knurl ridges
-knurl_depth = 0.9;  // knurl groove depth (mm)
+knurl_count      = 32;    // number of fine vertical knurl ridges
+knurl_depth      = 0.9;   // knurl groove depth (mm)
 
 /* [Quality] */
-$fn = 96;  // curve resolution (export final with -D '$fn=128')
+$fn = 96;  // curve resolution (export final with -D '$fn=160')
 
 // ----------------------------- derived --------------------------------------
-blade_thickness = slot_width - blade_fit_clearance;
-blade_width     = slot_length - blade_width_margin;
-eps  = 0.02;
-z0   = handle_height;          // top of knob = blade junction plane
-fr   = min(fillet_radius, handle_diameter/2 - 1);
+cavity_dia  = screen_od + cup_clearance;
+body_od     = cavity_dia + 2*cup_wall;
+total_h     = knob_height + cup_depth + (body_od/8);   // knob + cup-wall section
+cup_floor_z = total_h - cup_depth;                     // inner floor plane
+relief_z    = cup_floor_z - relief_depth;              // recessed floor plane
+blade_thk   = slot_width - blade_fit_clearance;
+blade_span  = slot_length - blade_width_margin;
+socket_depth = max(8, bit_total_len - bit_protrusion); // hex socket depth
+eps         = 0.02;
+
+assert(tip == "plastic" || tip == "hexbit",
+       "tip must be \"plastic\" or \"hexbit\"");
 
 // rounded rectangular bar footprint (4-cylinder hull), centred on origin
 module bar_footprint(w, t, h) {
-    cr = min(t/2, 1.2);
+    cr = min(t/2, 1.0);
     hull() for (sx = [-1, 1], sy = [-1, 1])
         translate([sx*(w/2 - cr), sy*(t/2 - cr), 0])
             cylinder(r = cr, h = h);
 }
 
-module knob_body() {
-    r = handle_diameter/2;
-    e = min(edge_round, r/3, handle_height/3);
+// solid outer body with rounded top & bottom outer edges
+module body_solid() {
+    r = body_od/2;
+    e = min(edge_round, r/4, total_h/6);
     rotate_extrude()
         offset(r = e) offset(delta = -e)
-            square([r, handle_height]);   // axis-aligned profile, x>=0
+            square([r, total_h]);
 }
 
 module finger_flats() {
-    r = handle_diameter/2;
+    r = body_od/2;
     for (i = [0 : flat_count - 1])
         rotate([0, 0, i*360/flat_count])
             translate([r - flat_depth + flat_cut_radius, 0, -1])
-                cylinder(r = flat_cut_radius, h = handle_height + 2);
+                cylinder(r = flat_cut_radius, h = knob_height + 1);
 }
 
 module knurl() {
-    r = handle_diameter/2;
+    r = body_od/2;
     for (i = [0 : knurl_count - 1])
         rotate([0, 0, i*360/knurl_count])
             translate([r, 0, -1])
-                cylinder(r = knurl_depth, h = handle_height + 2, $fn = 12);
+                cylinder(r = knurl_depth, h = knob_height + 1, $fn = 12);
 }
 
-module knob() {
-    difference() {
-        knob_body();
-        knurl();          // texture all around...
-        finger_flats();   // ...flats cut deeper, leaving knurl on the lobes
+// cup cavity + mouth chamfer + domed centre relief, bored from the top;
+// plus the hex bit socket + push-out hole when tip == "hexbit"
+module cavity_negative() {
+    translate([0, 0, cup_floor_z])
+        cylinder(d = cavity_dia, h = cup_depth + eps);
+    translate([0, 0, total_h - mouth_chamfer])
+        cylinder(d1 = cavity_dia, d2 = cavity_dia + 2*mouth_chamfer,
+                 h = mouth_chamfer + eps);
+    // domed/conical relief: clears the proud dome-head screw and self-centres
+    translate([0, 0, relief_z])
+        cylinder(d1 = relief_dia*0.55, d2 = relief_dia, h = relief_depth + eps);
+    if (tip == "hexbit") {
+        af = bit_af + bit_clear;
+        // hex socket bored down from the relief floor into the knob
+        translate([0, 0, relief_z - socket_depth])
+            cylinder(h = socket_depth + eps, $fn = 6, r = af / cos(30) / 2);
+        // small hole below it to push/knock the bit back out
+        translate([0, 0, -eps])
+            cylinder(d = pushout_dia, h = relief_z - socket_depth + 2*eps);
     }
 }
 
-// integral printed blade (root fillet -> shaft -> chamfered tip), points +Z
-module printed_blade() {
-    // root fillet flaring into the knob underside
+// central plastic drive bar standing up from the relief floor (tip = plastic)
+module drive_bar() {
+    f  = blade_root_fillet;
+    tw = blade_span - 2*blade_tip_chamfer;
+    tt = blade_thk  - 2*blade_tip_chamfer*blade_thk/blade_span;
     hull() {
-        translate([0, 0, z0 - eps]) bar_footprint(blade_width, blade_thickness, eps);
-        translate([0, 0, z0 - fr])
-            bar_footprint(blade_width + 2*fr, blade_thickness + 2*fr, eps);
+        translate([0, 0, relief_z]) bar_footprint(blade_span, blade_thk, eps);
+        translate([0, 0, relief_z + f])
+            bar_footprint(blade_span + 2*f, blade_thk + 2*f, eps);
     }
-    // shaft + chamfered tip
-    tipw = blade_width     - 2*blade_tip_chamfer;
-    tipt = blade_thickness - 2*blade_tip_chamfer*blade_thickness/blade_width;
     hull() {
-        translate([0, 0, z0]) bar_footprint(blade_width, blade_thickness, eps);
-        translate([0, 0, z0 + blade_length - blade_tip_chamfer])
-            bar_footprint(blade_width, blade_thickness, eps);
-        translate([0, 0, z0 + blade_length - eps])
-            bar_footprint(tipw, tipt, eps);
+        translate([0, 0, relief_z]) bar_footprint(blade_span, blade_thk, eps);
+        translate([0, 0, relief_z + blade_protrusion - blade_tip_chamfer])
+            bar_footprint(blade_span, blade_thk, eps);
+        translate([0, 0, relief_z + blade_protrusion - eps])
+            bar_footprint(tw, tt, eps);
     }
-}
-
-// negative for the captured steel blade: through-pocket + cross-pin hole
-module steel_cut() {
-    pw = steel_blade_width     + 2*steel_pocket_clear;
-    pt = steel_blade_thickness + 2*steel_pocket_clear;
-    translate([0, 0, z0 - steel_pocket_depth])
-        bar_footprint(pw, pt, steel_pocket_depth + eps);
-    // cross-pin: through the knob, intersecting the pocket
-    pin_z = z0 - steel_pocket_depth/2;
-    translate([0, 0, pin_z]) rotate([90, 0, 0])
-        cylinder(d = crosspin_dia, h = handle_diameter + 4,
-                 center = true, $fn = 24);
 }
 
 // ------------------------------ assembly ------------------------------------
-if (tip_mode == "printed") {
-    union() { knob(); printed_blade(); }
-} else if (tip_mode == "steel") {
-    difference() { knob(); steel_cut(); }
-} else if (tip_mode == "hex") {
-    af = hex_af + hex_clear;
+union() {
     difference() {
-        knob();
-        translate([0, 0, z0 - hex_socket_depth])
-            cylinder(h = hex_socket_depth + eps, $fn = 6,
-                     r = af / cos(30) / 2);
+        body_solid();
+        knurl();         // texture all around the knob...
+        finger_flats();  // ...flats cut deeper, leaving knurl on the lobes
+        cavity_negative();
     }
-} else {
-    assert(false, "tip_mode must be \"printed\", \"steel\", or \"hex\"");
+    if (tip == "plastic")
+        intersection() {                 // keep the bar within the relief column
+            drive_bar();
+            translate([0, 0, relief_z - 1])
+                cylinder(d = relief_dia - 0.5,
+                         h = blade_protrusion + relief_depth + 2);
+        }
 }

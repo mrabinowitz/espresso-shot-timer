@@ -1,106 +1,107 @@
-# Shower Screen Screwdriver (Rhino-style) — La Marzocco Linea Micra
+# Shower Screen Driver (Rhino-style) — La Marzocco Linea Micra
 
-A 3D-printable equivalent of the Rhino Coffee Gear Screen Driver: a one-piece
-knurled knob with concave finger flats that drives the wide slotted
-dispersion / shower-screen screw on a La Marzocco Linea Micra (also fits other
-LM machines and any wide "coin-slot" screen screw).
+A 3D-printable equivalent of the **Rhino Coffee Gear Screen Driver**: a
+**capture cup**, not a screwdriver.
 
-Parametric OpenSCAD source plus ready-to-slice STLs.
+## What it is / how the real one works
 
-## Files
+The Rhino tool is "a piece of plastic with a little piece of metal." The
+shower screen seats **into** a recessed cup so the whole screen is held
+captive and centred while a central drive feature engages the slot of the
+diffuser screw. Machine cool, you press the cup over the screen, turn
+**counter-clockwise**, and the screw backs out with the screen captured in
+the cup — no slipping, no screw dropped up into the group, fingers clear of
+the hot group. To refit: drop the screen + screw into the cup, offer it to
+the group, turn **clockwise**, withdraw. A bare flat screwdriver, by
+contrast, only touches the slot, cams out, scratches the screen and can drop
+the screw inside the group — the cup is the whole point.
 
-| File | What it is |
-|---|---|
-| `shower-screen-driver.scad` | Parametric source. Edit the variables at the top. |
-| `shower-screen-driver-printed.stl` | **Default.** Integral plastic blade. |
-| `shower-screen-driver-steel.stl` | Knob with a pocket + cross-pin hole to capture a wide flat steel blade. |
-| `shower-screen-driver-hex.stl` | Knob with a 1/4" hex socket for a slotted insert bit. |
-| `preview-*.png` | Rendered previews of each variant. |
+(Sources: La Marzocco / noto-studio / The Kitchen Barista maintenance guides
+confirm the Linea Micra screen is a ~56.4 mm OD dish held by a single central
+**slotted** diffuser screw, removed with a flat-head; Rhino/WebstaurantStore
+listings describe the cup + metal drive piece and the push-up / turn usage.)
 
-## Which variant?
+## Two drive options (you pick — no random metal needed)
 
-The blade has to be thin (~2.5 mm) to enter the screw slot, so it can't be
-made strong by making it thicker. Pick based on how hard your screw is:
+Set the `tip` parameter / pick the matching STL:
 
-- **`printed`** — easiest, no extra parts. Fine for a screw that comes out
-  hand/coin-snug. Print in **PETG** (or Nylon/ABS/ASA). Not plain PLA — it is
-  brittle and softens around 55 °C.
-- **`steel`** — **most robust, recommended if the screw may be scaled/seized.**
-  The knob is just an ergonomic handle; a wide flat steel blade (a reground
-  flat-blade screwdriver tip, or ground steel bar stock to the slot width)
-  drops into the top pocket and is locked with a 3 mm / M3 pin or rod through
-  the cross-hole. Steel strength *and* correct full-width slot engagement; the
-  hot tip is metal so heat is irrelevant.
-- **`hex`** — accepts a 1/4" slotted insert bit. Modular, but standard slotted
-  bits are narrower than the wide LM slot, so they can cam out and chew the
-  slot. Use only if that's what you have.
+| `tip` | File | What you need | Notes |
+|---|---|---|---|
+| `"plastic"` | `shower-screen-driver-plastic.stl` | nothing — fully printed | Default. Print in PETG. Fine for a normally hand/coin-snug screw. |
+| `"hexbit"` | `shower-screen-driver-hexbit.stl` | one **1/4" hex flat-/slotted-head screwdriver insert bit** (cheap, common) | Steel tip does the driving — robust for a stiff/scaled screw. |
+
+The `hexbit` cup has a 1/4" hex socket at the base of the centre relief. Push
+a standard slotted insert bit in (press-fit; add a dab of epoxy or drop a
+6 mm magnet in the socket if you want it permanent). A small hole under the
+socket lets you knock the bit back out. The bit's flat tip protrudes through
+the relief to engage the screw slot; the cup keeps everything coaxial so it
+can't cam out.
 
 Export a variant yourself:
 
 ```
-openscad -o out.stl -D '$fn=128' -D 'tip_mode="steel"' shower-screen-driver.scad
+openscad -o out.stl -D '$fn=160' -D 'tip="hexbit"' shower-screen-driver.scad
 ```
 
 ## Print settings
 
-- **Material:** PETG (recommended), Nylon / PA-CF, ABS, or ASA. Avoid plain
-  PLA. Always remove the screen with the machine **off and cooled**.
-- **Walls/perimeters:** 4+ (5–6 for the `printed` blade).
-- **Infill:** 40–60 % (or 100 % for the `printed` variant — it's small).
+- **Material:** PETG (recommended), Nylon/PA-CF, ABS or ASA. Avoid plain PLA
+  (brittle, softens ~55 °C). Remove the screen with the machine **off and
+  cooled** regardless.
+- **Walls:** 4+; **infill:** 40–60 % (plastic-bar variant: 100 %, it's small).
 - **Layer height:** 0.16 mm.
-- **Orientation:** Print **as exported** — the large flat face sits on the
-  bed and the blade/socket points up. No supports needed.
-- **Strength note (`printed`):** torque is carried across the layer lines at
-  the blade root. The root fillet helps. For maximum strength you *can* instead
-  lay the tool on its side and print the blade horizontally, but that needs
-  supports and distorts the knurl/flats — only do this if the upright print
-  fails. If it flexes or rounds over, print the **`steel`** variant.
+- **Orientation:** print **as exported** — knob end on the bed, cup mouth up,
+  bar/socket up the centre. **No supports.**
+- For the `plastic` bar, torque crosses the layer lines at the bar root (the
+  root fillet helps). If it flexes or rounds over on a stiff screw, print the
+  **`hexbit`** variant and drop in a steel bit.
 
-## Fitting it to your screw
+## Fitting it to your machine
 
-Defaults are best-known values for the LM Linea Micra dispersion screw:
-`slot_width = 2.8 mm`, `slot_length = 14 mm`. They are intentionally a little
-undersized (blade = slot − clearance, with a lead-in chamfer) so it seats
-without forcing.
+Defaults are best-known LM Linea Micra figures: screen `screen_od = 56.4`,
+single slotted diffuser screw `slot_width = 2.8`, `slot_length = 14`. They are
+deliberately a touch loose (clearances + lead-in chamfers) so it seats without
+forcing. If you have calipers, measure and adjust in the `.scad`, then
+re-export:
 
-If you have calipers, measure your screw slot and set `slot_width` and
-`slot_length` in the `.scad`, then re-export. If the printed blade is loose,
-lower `blade_fit_clearance`; if it won't enter, raise it — reprint and check.
+- Screen won't seat in the cup → raise `cup_clearance`.
+- Cup bottoms out before the screw engages → increase `cup_depth` or
+  `relief_depth`.
+- Plastic bar loose/tight in the slot → adjust `blade_fit_clearance`.
+- Bit too loose/tight in the socket → adjust `bit_clear`.
+- Bit tip not reaching the slot → increase `bit_protrusion` (re-export).
 
 ## Using it (Linea Micra)
 
-1. Machine **off and fully cooled**. Remove the portafilter.
-2. Seat the blade fully in the screw slot, press firmly so it doesn't cam out,
-   turn counter-clockwise to remove the screw, then lift out the screen.
-3. Clean / replace the screen. Reinstall: screen, then screw — **snug only**,
-   do not over-tighten (it only needs to seal the screen).
+1. Machine **off and fully cooled**; portafilter removed.
+2. Press the cup squarely over the shower screen so the screen seats into the
+   recess and the bar/bit drops into the screw slot.
+3. Hold pressure, turn **counter-clockwise** to unscrew; lift away — screen +
+   screw stay captured in the cup.
+4. Clean/replace. To refit, put screen + screw in the cup, offer up, turn
+   **clockwise**, snug only (do not over-tighten), withdraw the cup.
 
 ## Key parameters (`.scad`)
 
 | Parameter | Default | Meaning |
 |---|---|---|
-| `slot_width` | 2.8 | Screw slot width |
-| `blade_fit_clearance` | 0.30 | Fit + print tolerance subtracted from blade |
-| `slot_length` | 14 | Slot length across the head |
-| `blade_width_margin` | 1.0 | Blade narrower than slot by this |
-| `blade_length` | 12 | Blade protrusion |
-| `blade_tip_chamfer` | 1.0 | Lead-in chamfer at the tip |
-| `fillet_radius` | 3.0 | Blade↔knob root fillet |
-| `tip_mode` | "printed" | `printed` / `steel` / `hex` |
-| `handle_diameter` | 45 | Knob diameter |
-| `handle_height` | 28 | Knob height |
-| `flat_count` | 7 | Concave finger flats |
-| `flat_depth` | 4 | Flat depth into the rim |
-| `knurl_count` / `knurl_depth` | 28 / 0.9 | Knurl texture on the lobes |
-| `steel_blade_width/thickness` | 13 / 2.6 | Your steel blade size (steel mode) |
-| `crosspin_dia` | 3.2 | Retaining pin hole (3 mm / M3) |
-| `hex_af` | 6.35 | 1/4" hex across-flats (hex mode) |
+| `tip` | "plastic" | `plastic` or `hexbit` |
+| `screen_od` | 56.4 | Shower screen outer diameter |
+| `cup_clearance` | 0.8 | Diametral clearance so the screen slots in |
+| `cup_wall` | 3.0 | Wall thickness around the screen |
+| `cup_depth` | 12.0 | Internal cup depth |
+| `relief_dia` / `relief_depth` | 18 / 4 | Domed recess clearing the screw head |
+| `slot_width` / `slot_length` | 2.8 / 14 | Screw slot (plastic-bar fit) |
+| `blade_fit_clearance` | 0.30 | Bar fit + print tolerance |
+| `blade_protrusion` | 8.0 | Plastic bar height off the relief floor |
+| `bit_af` / `bit_clear` | 6.35 / 0.18 | 1/4" hex socket size + fit |
+| `bit_total_len` / `bit_protrusion` | 25 / 8 | Your bit length; tip stand-off |
+| `flat_count` | 7 | Concave finger flats on the knob |
+| `knurl_count` / `knurl_depth` | 32 / 0.9 | Knurl texture on the lobes |
 
 ## Standalone repo
 
-This folder is self-contained (own `.scad`, STLs, README, LICENSE,
-`.gitignore`) and is committed as its own local git history here. To lift it
-into its own GitHub repo later:
+This folder is self-contained. To lift it into its own GitHub repo:
 
 ```
 cp -r shower-screen-driver /path/to/new-repo && cd /path/to/new-repo
