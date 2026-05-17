@@ -1,0 +1,8 @@
+# Slicer / editor cruft
+*.gcode
+*.3mf
+*.bgcode
+*~
+*.bak
+.DS_Store
+*.swp
